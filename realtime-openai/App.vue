@@ -27,33 +27,30 @@
       };
     },
     methods: {
-      async connectToAPI() {
-        const apiKey = process.env.VUE_APP_OPENAI_API_KEY;
-  
-        // Configurar el cliente de la API en tiempo real
-        this.client = new RealtimeClient({
-          apiKey: apiKey,
-          dangerouslyAllowAPIKeyInBrowser: true, // Solo para pruebas, no recomendable en producción
-        });
-  
-        // Configurar la sesión
-        this.client.updateSession({
-          instructions: 'You are a great, upbeat friend.',
-          turn_detection: { type: 'none' },
-        });
-  
-        // Eventos de actualización de la conversación
-        this.client.on('conversation.updated', (event) => {
-          const { item } = event;
-          if (item.type === 'message') {
-            this.conversation.push(item); // Agregar el mensaje a la conversación
-          }
-        });
-  
-        // Conectarse a la API en tiempo real
-        await this.client.connect();
-        console.log('Conectado a la API en tiempo real');
-      },
+        async connectToAPI() {
+  if (this.client && this.client.isConnected()) {
+    console.warn('Ya estás conectado a la API.');
+    return;  // Evitar múltiples conexiones
+  }
+
+  const apiKey = process.env.VUE_APP_OPENAI_API_KEY;
+
+  // Configurar el cliente de la API en tiempo real
+  this.client = new RealtimeClient({
+    apiKey: apiKey,
+    dangerouslyAllowAPIKeyInBrowser: true,
+  });
+
+  // Configurar la sesión
+  this.client.updateSession({
+    instructions: 'You are a great, upbeat friend.',
+    turn_detection: { type: 'none' },
+  });
+
+  // Conectarse a la API en tiempo real
+  await this.client.connect();
+  console.log('Conectado a la API en tiempo real');
+},
       async sendMessage() {
         if (this.userMessage.trim() === '') return;
   

@@ -28,6 +28,7 @@ const client = new RealtimeClient({ apiKey: process.env.OPENAI_API_KEY });
 // Can set parameters ahead of connecting, either separately or all at once
 client.updateSession({ instructions: 'You are a great, upbeat friend.' });
 client.updateSession({ voice: 'alloy' });
+
 client.updateSession({
   turn_detection: { type: 'none' }, // or 'server_vad'
   input_audio_transcription: { model: 'whisper-1' },
